@@ -1,4 +1,10 @@
 <?php
+// envファイルの読み込み
+require __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
 
 // メッセージを保存するファイルのパス設定
 define('FILENAME', './message.txt');
@@ -15,39 +21,101 @@ $message = array();
 $message_array = array();
 $success_message = null;
 $clean = array();
+$pdo = null;
+$stmt = null;
+$res = null;
+$option = null;
+
+// データベースに接続
+try {
+    $option = array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
+    );
+    $pdo = new PDO('mysql:charset=UTF8;dbname=board;host=localhost', $_ENV['ID'], $_ENV['PASSWORD'], $option);
+} catch (PDOException $e) {
+    // 接続エラーのときエラー内容を取得する
+    $error_message[] = $e->getMessage();
+}
 
 if (!empty($_POST['btn_submit'])) {
+
+    // 空白除去
+    $view_name = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['view_name']);
+    $message = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['message']);
     // 表示名の入力チェック
-    if (empty($_POST['view_name'])) {
+    if (empty($view_name)) {
     } else {
         $clean['view_name'] = htmlspecialchars($_POST['view_name'], ENT_QUOTES, 'UTF-8');
         $clean['view_name'] = preg_replace('/\\r\\n|\\n|\\r/', '', $clean['view_name']);
     }
 
     // メッセージの入力チェック
-    if (empty($_POST['message'])) {
+    if (empty($message)) {
     } else {
         $clean['message'] = htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8');
         $clean['message'] = preg_replace('/\\r\\n|\\n|\\r/', '<br>', $clean['message']);
     }
 
-    if ($file_handle = fopen(FILENAME, "a")) {
+    if (empty($error_message)) {
 
-        // 書き込み日時を取得
-        $current_date = date("Y-m-d H:i:s");
 
-        // 書き込むデータを作成
-        $data = "'" . $clean['view_name'] . "','" . $clean['message'] . "','" . $current_date . "'\n";
+        // if ($file_handle = fopen(FILENAME, "a")) {
 
-        // 書き込み
-        fwrite($file_handle, $data);
+        //     // 書き込み日時を取得
+        //     $current_date = date("Y-m-d H:i:s");
 
-        // ファイルを閉じる
-        fclose($file_handle);
+        //     // 書き込むデータを作成
+        //     $data = "'" . $clean['view_name'] . "','" . $clean['message'] . "','" . $current_date . "'\n";
 
-        $success_message = 'メッセージを書き込みました。';
+        //     // 書き込み
+        //     fwrite($file_handle, $data);
+
+        //     // ファイルを閉じる
+        //     fclose($file_handle);
+
+        //     $success_message = 'メッセージを書き込みました。';
+        // }
+
+        // トランザクション開始
+        $pdo->beginTransaction();
+
+        try {
+
+            // 書き込み日時を取得
+            $current_date = date("Y-m-d H:i:s");
+
+            // SQL作成
+            $stmt = $pdo->prepare("INSERT INTO message (view_name, message, post_date) VALUES ( :view_name, :message, :current_date)");
+
+            // 値をセット
+            $stmt->bindParam(':view_name', $view_name, PDO::PARAM_STR);
+            $stmt->bindParam(':message', $message, PDO::PARAM_STR);
+            $stmt->bindParam(':current_date', $current_date, PDO::PARAM_STR);
+
+            // SQLクエリの実行
+            $res = $stmt->execute();
+            // コミット
+            $res = $pdo->commit();
+        } catch (Exception $e) {
+
+            // エラーが発生した時はロールバック
+            $pdo->rollBack();
+        }
+
+        if ($res) {
+            $success_message = 'メッセージを書き込みました。';
+        } else {
+            $error_message[] = '書き込みに失敗しました。';
+        }
+
+        // プリペアドステートメントを削除
+        $stmt = null;
     }
 }
+
+// データベースの接続を閉じる
+$pdo = null;
 
 if ($file_handle = fopen(FILENAME, 'r')) {
     while ($data = fgets($file_handle)) {
