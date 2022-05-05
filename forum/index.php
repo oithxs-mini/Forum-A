@@ -197,11 +197,11 @@ $pdo = null;
     </div>
 
     <hr>
-    <div class="container">
+    <div class="container my-5">
         <section>
             <?php if (!empty($message_array)) : ?>
                 <?php foreach ($message_array as $value) : ?>
-                    <article>
+                    <article class="alert-secondary">
                         <div class="info">
                             <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
