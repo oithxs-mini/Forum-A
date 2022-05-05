@@ -5,22 +5,14 @@ require __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
-
-// メッセージを保存するファイルのパス設定
-define('FILENAME', './message.txt');
-
 // タイムゾーン設定
 date_default_timezone_set('Asia/Tokyo');
 
 // 変数の初期化
 $current_date = null;
-$data = null;
-$file_handle = null;
-$split_data = null;
 $message = array();
 $message_array = array();
 $success_message = null;
-$clean = array();
 $pdo = null;
 $stmt = null;
 $res = null;
@@ -58,32 +50,13 @@ if (!empty($_POST['btn_submit'])) {
     }
 
     if (empty($error_message)) {
-
-
-        // if ($file_handle = fopen(FILENAME, "a")) {
-
-        //     // 書き込み日時を取得
-        //     $current_date = date("Y-m-d H:i:s");
-
-        //     // 書き込むデータを作成
-        //     $data = "'" . $clean['view_name'] . "','" . $clean['message'] . "','" . $current_date . "'\n";
-
-        //     // 書き込み
-        //     fwrite($file_handle, $data);
-
-        //     // ファイルを閉じる
-        //     fclose($file_handle);
-
-        //     $success_message = 'メッセージを書き込みました。';
-        // }
+        // 書き込み日時を取得
+        $current_date = date("Y-m-d H:i:s");
 
         // トランザクション開始
         $pdo->beginTransaction();
 
         try {
-
-            // 書き込み日時を取得
-            $current_date = date("Y-m-d H:i:s");
 
             // SQL作成
             $stmt = $pdo->prepare("INSERT INTO message (view_name, message, post_date) VALUES ( :view_name, :message, :current_date)");
@@ -125,23 +98,6 @@ if (
 
 // データベースの接続を閉じる
 $pdo = null;
-
-// if ($file_handle = fopen(FILENAME, 'r')) {
-//     while ($data = fgets($file_handle)) {
-
-//         $split_data = preg_split('/\'/', $data);
-
-//         $message = array(
-//             'view_name' => $split_data[1],
-//             'message' => $split_data[3],
-//             'post_date' => $split_data[5]
-//         );
-//         array_unshift($message_array, $message);
-//     }
-
-//     // ファイルを閉じる
-//     fclose($file_handle);
-// }
 
 ?>
 
@@ -235,10 +191,10 @@ $pdo = null;
                 <?php foreach ($message_array as $value) : ?>
                     <article>
                         <div class="info">
-                            <h2><?php echo $value['view_name']; ?></h2>
+                            <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
                         </div>
-                        <p><?php echo nl2br($value['message']); ?></p>
+                        <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
                     </article>
                 <?php endforeach; ?>
             <?php endif; ?>
