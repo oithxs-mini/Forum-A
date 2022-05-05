@@ -18,6 +18,13 @@ $stmt = null;
 $res = null;
 $option = null;
 
+//.envから
+$envDbname = $_ENV['DB_NAME'];
+$envHost = $_ENV['HOST'];
+$envId = $_ENV['ID'];
+$envPassword = $_ENV['PASSWORD'];
+$dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
+
 session_start();
 
 // データベースに接続
@@ -26,7 +33,7 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
     );
-    $pdo = new PDO('mysql:charset=UTF8;dbname=board;host=localhost', $_ENV['ID'], $_ENV['PASSWORD'], $option);
+    $pdo = new PDO($dsn, $envId, $envPassword, $option);
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
     $error_message[] = $e->getMessage();
