@@ -18,6 +18,8 @@ $stmt = null;
 $res = null;
 $option = null;
 
+session_start();
+
 // データベースに接続
 try {
     $option = array(
@@ -35,11 +37,12 @@ if (!empty($_POST['btn_submit'])) {
     // 空白除去
     $view_name = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['view_name']);
     $message = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['message']);
+
     // 表示名の入力チェック
     if (empty($view_name)) {
     } else {
-        $clean['view_name'] = htmlspecialchars($_POST['view_name'], ENT_QUOTES, 'UTF-8');
-        $clean['view_name'] = preg_replace('/\\r\\n|\\n|\\r/', '', $clean['view_name']);
+        // セッションに表示名を保存
+        $_SESSION['view_name'] = $view_name;
     }
 
     // メッセージの入力チェック
@@ -170,7 +173,9 @@ $pdo = null;
         <form method="post" id="formmessage">
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">表示名</label>
-                <input type="text" name="view_name" class="form-control messagearea" id="username" />
+                <input type="text" name="view_name" class="form-control messagearea" id="username" value="<?php if (!empty($_SESSION['view_name'])) {
+                                                                                                                echo htmlspecialchars($_SESSION['view_name'], ENT_QUOTES, 'UTF-8');
+                                                                                                            } ?>" />
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">メッセージ</label>
