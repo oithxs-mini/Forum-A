@@ -1,70 +1,113 @@
 <?php
+// envファイルの読み込み
+require __DIR__ . '/../vendor/autoload.php';
 
-// メッセージを保存するファイルのパス設定
-define('FILENAME', './message.txt');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
 
 // タイムゾーン設定
 date_default_timezone_set('Asia/Tokyo');
 
 // 変数の初期化
 $current_date = null;
-$data = null;
-$file_handle = null;
-$split_data = null;
 $message = array();
 $message_array = array();
 $success_message = null;
-$clean = array();
+$pdo = null;
+$stmt = null;
+$res = null;
+$option = null;
+
+//.envから
+$envDbname = $_ENV['DB_NAME'];
+$envHost = $_ENV['HOST'];
+$envId = $_ENV['ID'];
+$envPassword = $_ENV['PASSWORD'];
+$dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
+
+session_start();
+
+// データベースに接続
+try {
+    $option = array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
+    );
+    $pdo = new PDO($dsn, $envId, $envPassword, $option);
+} catch (PDOException $e) {
+    // 接続エラーのときエラー内容を取得する
+    $error_message[] = $e->getMessage();
+}
 
 if (!empty($_POST['btn_submit'])) {
+
+    // 空白除去
+    $view_name = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['view_name']);
+    $message = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['message']);
+
     // 表示名の入力チェック
-    if (empty($_POST['view_name'])) {
+    if (empty($view_name)) {
     } else {
-        $clean['view_name'] = htmlspecialchars($_POST['view_name'], ENT_QUOTES, 'UTF-8');
-        $clean['view_name'] = preg_replace('/\\r\\n|\\n|\\r/', '', $clean['view_name']);
+        // セッションに表示名を保存
+        $_SESSION['view_name'] = $view_name;
     }
 
     // メッセージの入力チェック
-    if (empty($_POST['message'])) {
+    if (empty($message)) {
     } else {
         $clean['message'] = htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8');
         $clean['message'] = preg_replace('/\\r\\n|\\n|\\r/', '<br>', $clean['message']);
     }
 
-    if ($file_handle = fopen(FILENAME, "a")) {
-
+    if (empty($error_message)) {
         // 書き込み日時を取得
         $current_date = date("Y-m-d H:i:s");
 
-        // 書き込むデータを作成
-        $data = "'" . $clean['view_name'] . "','" . $clean['message'] . "','" . $current_date . "'\n";
+        // トランザクション開始
+        $pdo->beginTransaction();
 
-        // 書き込み
-        fwrite($file_handle, $data);
+        try {
 
-        // ファイルを閉じる
-        fclose($file_handle);
+            // SQL作成
+            $stmt = $pdo->prepare("INSERT INTO message (view_name, message, post_date) VALUES ( :view_name, :message, :current_date)");
 
-        $success_message = 'メッセージを書き込みました。';
+            // 値をセット
+            $stmt->bindParam(':view_name', $view_name, PDO::PARAM_STR);
+            $stmt->bindParam(':message', $message, PDO::PARAM_STR);
+            $stmt->bindParam(':current_date', $current_date, PDO::PARAM_STR);
+
+            // SQLクエリの実行
+            $res = $stmt->execute();
+            // コミット
+            $res = $pdo->commit();
+        } catch (Exception $e) {
+
+            // エラーが発生した時はロールバック
+            $pdo->rollBack();
+        }
+
+        if ($res) {
+            $success_message = 'メッセージを書き込みました。';
+        } else {
+            $error_message[] = '書き込みに失敗しました。';
+        }
+
+        // プリペアドステートメントを削除
+        $stmt = null;
     }
 }
 
-if ($file_handle = fopen(FILENAME, 'r')) {
-    while ($data = fgets($file_handle)) {
+if (
+    empty($error_message)
+) {
 
-        $split_data = preg_split('/\'/', $data);
-
-        $message = array(
-            'view_name' => $split_data[1],
-            'message' => $split_data[3],
-            'post_date' => $split_data[5]
-        );
-        array_unshift($message_array, $message);
-    }
-
-    // ファイルを閉じる
-    fclose($file_handle);
+    // メッセージのデータを取得する
+    $sql = "SELECT view_name,message,post_date FROM message ORDER BY post_date DESC";
+    $message_array = $pdo->query($sql);
 }
+
+// データベースの接続を閉じる
+$pdo = null;
 
 ?>
 
@@ -137,7 +180,9 @@ if ($file_handle = fopen(FILENAME, 'r')) {
         <form method="post" id="formmessage">
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">表示名</label>
-                <input type="text" name="view_name" class="form-control messagearea" id="username" />
+                <input type="text" name="view_name" class="form-control messagearea" id="username" value="<?php if (!empty($_SESSION['view_name'])) {
+                                                                                                                echo htmlspecialchars($_SESSION['view_name'], ENT_QUOTES, 'UTF-8');
+                                                                                                            } ?>" />
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">メッセージ</label>
@@ -158,10 +203,10 @@ if ($file_handle = fopen(FILENAME, 'r')) {
                 <?php foreach ($message_array as $value) : ?>
                     <article>
                         <div class="info">
-                            <h2><?php echo $value['view_name']; ?></h2>
+                            <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
                         </div>
-                        <p><?php echo $value['message']; ?></p>
+                        <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
                     </article>
                 <?php endforeach; ?>
             <?php endif; ?>
