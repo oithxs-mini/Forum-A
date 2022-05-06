@@ -23,17 +23,23 @@ $envDbname = $_ENV['DB_NAME'];
 $envHost = $_ENV['HOST'];
 $envId = $_ENV['ID'];
 $envPassword = $_ENV['PASSWORD'];
-$envAdminPassword = $_ENV['ADMINPASSWORD'];
 $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
+
+// 管理者としてログインしているか確認
+if (empty($_SESSION['admin_login']) || $_SESSION['admin_login'] !== true) {
+
+    // ログインページへリダイレクト
+    header("Location: ./admin.php");
+    exit;
+}
 
 // データベースに接続
 try {
     $option = array(
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::MYSQL_ATTR_MULTI_STATEMENTS =>
-        false,
+        PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
     );
     $pdo = new PDO($dsn, $envId, $envPassword, $option);
 } catch (PDOException $e) {
@@ -41,22 +47,29 @@ try {
     $error_message[] = $e->getMessage();
 }
 
-if (!empty($_POST['btn_submit'])) {
-    if (!empty($_POST['admin_password']) && $_POST['admin_password'] === $envAdminPassword) {
-        $_SESSION['admin_login'] = true;
-    } else {
-        $error_message[] = 'ログインに失敗しました。';
+if (!empty($_GET['message_id'])) {
+
+    // SQL作成
+    $stmt = $pdo->prepare("SELECT * FROM message WHERE id = :id");
+
+    // 値をセット
+    $stmt->bindValue(':id', $_GET['message_id'], PDO::PARAM_INT);
+
+    // SQLクエリの実行
+    $stmt->execute();
+
+    // 表示するデータを取得
+    $message_data = $stmt->fetch();
+
+    // 投稿データが取得できないときは管理ページに戻る
+    if (empty($message_data)) {
+        header("Location: ./admin.php");
+        exit;
     }
 }
 
-if (empty($error_message)) {
-
-    // メッセージのデータを取得する
-    $sql = "SELECT * FROM message ORDER BY post_date DESC";
-    $message_array = $pdo->query($sql);
-}
-
 // データベースの接続を閉じる
+$stmt = null;
 $pdo = null;
 
 ?>
@@ -68,7 +81,7 @@ $pdo = null;
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ひとこと掲示板 管理ページ</title>
+    <title>管理ページ (投稿の編集)</title>
     <link rel="stylesheet" href="../css/index.css" />
 
     <!-- Bootstrap CSS -->
@@ -114,72 +127,36 @@ $pdo = null;
         </div>
     </header>
 
-    <p class="text-center h1 mt-4">管理ページ</p>
+    <p class="text-center h1 mt-4">管理ページ (投稿の編集)</p>
 
-    <?php if (!empty($error_message[0])) : ?>
-        </div>
-        <div class="alert alert-danger d-flex align-items-center container mt-4" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24">
-                <use xlink:href="#exclamation-triangle-fill" />
-            </svg>
-            <use xlink:href="#check-circle-fill" />
-            </svg>
-            <div>
-                ログインに失敗しました
+    <div class="container mt-5">
+        <form method="post" id="formmessage">
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">表示名</label>
+                <input type="text" name="view_name" class="form-control messagearea" id="username" value="<?php if (!empty($message_data['view_name'])) {
+                                                                                                                echo $message_data['view_name'];
+                                                                                                            } ?>" />
             </div>
-        </div>
-    <?php endif; ?>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">メッセージ</label>
+                <textarea name="message" class="form-control messagearea" id="textarea" rows="4"><?php if (!empty($message_data['message'])) {
+                                                                                                        echo $message_data['message'];
+                                                                                                    } ?></textarea>
+            </div>
+            <a class="btn_cancel" href="admin.php">キャンセル</a>
+            <div class="d-grid gap-2 col-6 mx-auto">
 
-    <div class="container my-5">
-        <section>
-            <?php if (!empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true) : ?>
-
-                <form method="get" action="./download.php">
-
-                    <button type="submit" name="btn_download" class="btn btn-primary rounded-pill">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
-                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
-                        </svg> Download </button>
-
-                    <select name="limit">
-                        <option value="">全て</option>
-                        <option value="10">10件</option>
-                        <option value="30">30件</option>
-                    </select>
-
-                    <?php if (!empty($message_array)) : ?>
-                        <?php foreach ($message_array as $value) : ?>
-                            <article class="alert-secondary">
-                                <div class="info">
-                                    <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
-                                    <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
-                                    <span><a href="edit.php?message_id=<?php echo $value['id']; ?>">編集</a> <a href="delete.php?message_id=<?php echo $value['id']; ?>">削除</a></span>
-                                </div>
-                                <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
-                            </article>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-
-                <?php else : ?>
-                    <!-- ログインフォーム -->
-                    <form method="post">
-                        <div>
-                            <label for="admin_password">ログインパスワード</label>
-                            <input id="admin_password" type="password" name="admin_password" value="">
-                        </div>
-                        <input type="submit" name="btn_submit" value="ログイン">
-                    </form>
-
-                <?php endif; ?>
-        </section>
+                <button type="submit" name="btn_submit" class="btn btn-primary" id="sendbtn" value="書き込む" disabled>
+                    更新
+                </button>
+            </div>
+            <input type="hidden" name="message_id" value="<?php if (!empty($message_data['id'])) {
+                                                                echo $message_data['id'];
+                                                            } ?>">
+        </form>
     </div>
 
     <!-- svgの読み込み -->
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
-        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
-    </svg>
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
