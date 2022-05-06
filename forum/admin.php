@@ -23,6 +23,7 @@ $envDbname = $_ENV['DB_NAME'];
 $envHost = $_ENV['HOST'];
 $envId = $_ENV['ID'];
 $envPassword = $_ENV['PASSWORD'];
+$envAdminPassword = $_ENV['ADMINPASSWORD'];
 $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
@@ -31,7 +32,8 @@ session_start();
 try {
     $option = array(
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
+        PDO::MYSQL_ATTR_MULTI_STATEMENTS =>
+        false,
     );
     $pdo = new PDO($dsn, $envId, $envPassword, $option);
 } catch (PDOException $e) {
@@ -40,11 +42,14 @@ try {
 }
 
 if (!empty($_POST['btn_submit'])) {
+    if (!empty($_POST['admin_password']) && $_POST['admin_password'] === $envAdminPassword) {
+        $_SESSION['admin_login'] = true;
+    } else {
+        $error_message[] = 'ログインに失敗しました。';
+    }
 }
 
-if (
-    empty($error_message)
-) {
+if (empty($error_message)) {
 
     // メッセージのデータを取得する
     $sql = "SELECT view_name,message,post_date FROM message ORDER BY post_date DESC";
@@ -109,18 +114,45 @@ $pdo = null;
         </div>
     </header>
 
+    <?php if (!empty($error_message[0])) : ?>
+        </div>
+        <div class="alert alert-danger d-flex align-items-center container mt-4" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+                <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <use xlink:href="#check-circle-fill" />
+            </svg>
+            <div>
+                ログインに失敗しました
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div class="container my-5">
         <section>
-            <?php if (!empty($message_array)) : ?>
-                <?php foreach ($message_array as $value) : ?>
-                    <article class="alert-secondary">
-                        <div class="info">
-                            <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
-                            <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
-                        </div>
-                        <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
-                    </article>
-                <?php endforeach; ?>
+            <?php if (!empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true) : ?>
+                <?php if (!empty($message_array)) : ?>
+                    <?php foreach ($message_array as $value) : ?>
+                        <article class="alert-secondary">
+                            <div class="info">
+                                <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                                <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
+                            </div>
+                            <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
+                        </article>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
+            <?php else : ?>
+                <!-- ログインフォーム -->
+                <form method="post">
+                    <div>
+                        <label for="admin_password">ログインパスワード</label>
+                        <input id="admin_password" type="password" name="admin_password" value="">
+                    </div>
+                    <input type="submit" name="btn_submit" value="ログイン">
+                </form>
+
             <?php endif; ?>
         </section>
     </div>
