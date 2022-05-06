@@ -54,9 +54,13 @@ if (!empty($_POST['btn_submit'])) {
 
     // メッセージの入力チェック
     if (empty($message)) {
+        $error_message[] = 'ひと言メッセージを入力してください。';
     } else {
-        $clean['message'] = htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8');
-        $clean['message'] = preg_replace('/\\r\\n|\\n|\\r/', '<br>', $clean['message']);
+
+        // 文字数を確認
+        if (100 < mb_strlen($message, 'UTF-8')) {
+            $error_message[] = 'ひと言メッセージは100文字以内で入力してください。';
+        }
     }
 
     if (empty($error_message)) {
@@ -190,7 +194,9 @@ $pdo = null;
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">メッセージ</label>
-                <textarea name="message" class="form-control messagearea" id="textarea" rows="4"></textarea>
+                <textarea name="message" class="form-control messagearea" id="textarea" rows="4"><?php if (!empty($message)) {
+                                                                                                        echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+                                                                                                    } ?></textarea>
             </div>
             <div class="d-grid gap-2 col-6 mx-auto">
                 <button type="submit" name="btn_submit" class="btn btn-primary" id="sendbtn" value="書き込む" disabled>
