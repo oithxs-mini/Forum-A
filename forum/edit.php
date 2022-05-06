@@ -143,10 +143,10 @@ $pdo = null;
                                                                                                         echo $message_data['message'];
                                                                                                     } ?></textarea>
             </div>
-            <a class="btn_cancel" href="admin.php">キャンセル</a>
-            <div class="d-grid gap-2 col-6 mx-auto">
 
-                <button type="submit" name="btn_submit" class="btn btn-primary" id="sendbtn" value="書き込む" disabled>
+            <div class="btn-toolbar mt-5">
+                <button class="col-1 btn btn-outline-secondary" type="button" onclick="location.href='admin.php'">キャンセル</button>
+                <button type="submit" name="btn_submit" class="btn btn-primary col-6 mx-auto" id="sendbtn" value="書き込む" disabled>
                     更新
                 </button>
             </div>
