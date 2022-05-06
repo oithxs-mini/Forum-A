@@ -9,10 +9,10 @@ $dotenv->load();
 date_default_timezone_set('Asia/Tokyo');
 
 // 変数の初期化
-$current_date = null;
+$view_name = null;
 $message = array();
-$message_array = array();
-$success_message = null;
+$message_data = null;
+$error_message = array();
 $pdo = null;
 $stmt = null;
 $res = null;
@@ -47,7 +47,7 @@ try {
     $error_message[] = $e->getMessage();
 }
 
-if (!empty($_GET['message_id'])) {
+if (!empty($_GET['message_id']) && empty($_POST['message_id'])) {
 
     // SQL作成
     $stmt = $pdo->prepare("SELECT * FROM message WHERE id = :id");
@@ -65,6 +65,54 @@ if (!empty($_GET['message_id'])) {
     if (empty($message_data)) {
         header("Location: ./admin.php");
         exit;
+    }
+} elseif (!empty($_POST['message_id'])) {
+
+    // 空白除去
+    $view_name = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['view_name']);
+    $message = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['message']);
+
+    // 表示名の入力チェック
+    if (empty($view_name)) {
+        $error_message[] = '表示名を入力してください。';
+    }
+
+    // メッセージの入力チェック
+    if (empty($message)) {
+        $error_message[] = 'メッセージを入力してください。';
+    }
+
+    if (empty($error_message)) {
+
+        // トランザクション開始
+        $pdo->beginTransaction();
+
+        try {
+
+            // SQL作成
+            $stmt = $pdo->prepare("UPDATE message SET view_name = :view_name, message= :message WHERE id = :id");
+
+            // 値をセット
+            $stmt->bindParam(':view_name', $view_name, PDO::PARAM_STR);
+            $stmt->bindParam(':message', $message, PDO::PARAM_STR);
+            $stmt->bindValue(':id', $_POST['message_id'], PDO::PARAM_INT);
+
+            // SQLクエリの実行
+            $stmt->execute();
+
+            // コミット
+            $res = $pdo->commit();
+        } catch (Exception $e) {
+
+            // エラーが発生した時はロールバック
+            $pdo->rollBack();
+        }
+
+        // 更新に成功したら一覧に戻る
+        if ($res) {
+            header("Location: ./admin.php");
+            exit;
+        }
     }
 }
 
@@ -135,12 +183,16 @@ $pdo = null;
                 <label for="exampleFormControlInput1" class="form-label">表示名</label>
                 <input type="text" name="view_name" class="form-control messagearea" id="username" value="<?php if (!empty($message_data['view_name'])) {
                                                                                                                 echo $message_data['view_name'];
+                                                                                                            } elseif (!empty($view_name)) {
+                                                                                                                echo htmlspecialchars($view_name, ENT_QUOTES, 'UTF-8');
                                                                                                             } ?>" />
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">メッセージ</label>
                 <textarea name="message" class="form-control messagearea" id="textarea" rows="4"><?php if (!empty($message_data['message'])) {
                                                                                                         echo $message_data['message'];
+                                                                                                    } elseif (!empty($message)) {
+                                                                                                        echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
                                                                                                     } ?></textarea>
             </div>
 
@@ -152,6 +204,8 @@ $pdo = null;
             </div>
             <input type="hidden" name="message_id" value="<?php if (!empty($message_data['id'])) {
                                                                 echo $message_data['id'];
+                                                            } elseif (!empty($_POST['message_id'])) {
+                                                                echo htmlspecialchars($_POST['message_id'], ENT_QUOTES, 'UTF-8');
                                                             } ?>">
         </form>
     </div>
