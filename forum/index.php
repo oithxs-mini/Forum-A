@@ -87,13 +87,16 @@ if (!empty($_POST['btn_submit'])) {
         }
 
         if ($res) {
-            $success_message = 'メッセージを書き込みました。';
+            $_SESSION['success_message'] = 'メッセージを書き込みました。';
         } else {
             $error_message[] = '書き込みに失敗しました。';
         }
 
         // プリペアドステートメントを削除
         $stmt = null;
+
+        header('Location: ./');
+        exit;
     }
 }
 
@@ -164,7 +167,7 @@ $pdo = null;
         </div>
     </header>
 
-    <?php if (!empty($success_message)) : ?>
+    <?php if (empty($_POST['btn_submit']) && !empty($_SESSION['success_message'])) : ?>
         </div>
         <div class="alert alert-success d-flex align-items-center container mt-4" role="alert">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24">
@@ -174,6 +177,7 @@ $pdo = null;
                 メッセージを書き込みました
             </div>
         </div>
+        <?php unset($_SESSION['success_message']); ?>
     <?php endif; ?>
 
     <div class="container mt-5">
