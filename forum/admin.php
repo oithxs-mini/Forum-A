@@ -131,29 +131,33 @@ $pdo = null;
     <div class="container my-5">
         <section>
             <?php if (!empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true) : ?>
-                <?php if (!empty($message_array)) : ?>
-                    <?php foreach ($message_array as $value) : ?>
-                        <article class="alert-secondary">
-                            <div class="info">
-                                <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
-                                <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
-                            </div>
-                            <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
-                        </article>
-                    <?php endforeach; ?>
+
+                <form method="get" action="./download.php">
+                    <button type="submit" name="btn_download" class="btn btn-primary rounded-pill">ダウンロード</button>
+
+                    <?php if (!empty($message_array)) : ?>
+                        <?php foreach ($message_array as $value) : ?>
+                            <article class="alert-secondary">
+                                <div class="info">
+                                    <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                                    <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
+                                </div>
+                                <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+
+                <?php else : ?>
+                    <!-- ログインフォーム -->
+                    <form method="post">
+                        <div>
+                            <label for="admin_password">ログインパスワード</label>
+                            <input id="admin_password" type="password" name="admin_password" value="">
+                        </div>
+                        <input type="submit" name="btn_submit" value="ログイン">
+                    </form>
+
                 <?php endif; ?>
-
-            <?php else : ?>
-                <!-- ログインフォーム -->
-                <form method="post">
-                    <div>
-                        <label for="admin_password">ログインパスワード</label>
-                        <input id="admin_password" type="password" name="admin_password" value="">
-                    </div>
-                    <input type="submit" name="btn_submit" value="ログイン">
-                </form>
-
-            <?php endif; ?>
         </section>
     </div>
 
