@@ -114,6 +114,8 @@ $pdo = null;
         </div>
     </header>
 
+    <p class="text-center h1 mt-4">管理ページ</p>
+
     <?php if (!empty($error_message[0])) : ?>
         </div>
         <div class="alert alert-danger d-flex align-items-center container mt-4" role="alert">
