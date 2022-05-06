@@ -58,9 +58,9 @@ article p {
 
 @media only screen and (max-width: 1000px) {
 
-    body {
+    /* body {
         padding: 30px 5%;
-    }
+    } */
 
     input[type="text"] {
         width: 100%;
