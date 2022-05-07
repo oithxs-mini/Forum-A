@@ -84,7 +84,7 @@ if (!empty($_GET['message_id']) && empty($_POST['message_id'])) {
 
         // 文字数を確認
         if (100 < mb_strlen($message, 'UTF-8')) {
-            $error_message[] = 'ひと言メッセージは100文字以内で入力してください。';
+            $error_message[] = 'word-count';
         }
     }
 
@@ -182,6 +182,21 @@ $pdo = null;
     </header>
 
     <p class="text-center h1 mt-4">管理ページ (投稿の編集)</p>
+
+    <!-- アラート -->
+    <?php if (!empty($error_message[0]) && $error_message[0] == 'word-count') : ?>
+        </div>
+        <div class="alert alert-warning d-flex align-items-center container mt-4" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+                <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <use xlink:href="#check-circle-fill" />
+            </svg>
+            <div>
+                メッセージは100文字以内で入力してください
+            </div>
+        </div>
+    <?php endif; ?>
 
     <div class="container mt-5">
         <form method="post" id="formmessage">

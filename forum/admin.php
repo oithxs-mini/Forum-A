@@ -53,7 +53,7 @@ if (!empty($_POST['btn_submit'])) {
     }
 }
 
-if (empty($error_message)) {
+if (!empty($pdo)) {
 
     // メッセージのデータを取得する
     $sql = "SELECT * FROM message ORDER BY post_date DESC";

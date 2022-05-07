@@ -59,7 +59,7 @@ if (!empty($_POST['btn_submit'])) {
 
         // 文字数を確認
         if (100 < mb_strlen($message, 'UTF-8')) {
-            $error_message[] = 'ひと言メッセージは100文字以内で入力してください。';
+            $error_message[] = 'word-count';
         }
     }
 
@@ -93,7 +93,7 @@ if (!empty($_POST['btn_submit'])) {
         if ($res) {
             $_SESSION['success_message'] = 'メッセージを書き込みました。';
         } else {
-            $error_message[] = '書き込みに失敗しました。';
+            $error_message[] = 'cannot-write';
         }
 
         // プリペアドステートメントを削除
@@ -104,9 +104,7 @@ if (!empty($_POST['btn_submit'])) {
     }
 }
 
-if (
-    empty($error_message)
-) {
+if (!empty($pdo)) {
 
     // メッセージのデータを取得する
     $sql = "SELECT view_name,message,post_date FROM message ORDER BY post_date DESC";
@@ -171,6 +169,7 @@ $pdo = null;
         </div>
     </header>
 
+    <!-- アラート -->
     <?php if (empty($_POST['btn_submit']) && !empty($_SESSION['success_message'])) : ?>
         </div>
         <div class="alert alert-success d-flex align-items-center container mt-4" role="alert">
@@ -182,6 +181,34 @@ $pdo = null;
             </div>
         </div>
         <?php unset($_SESSION['success_message']); ?>
+    <?php endif; ?>
+
+    <?php if (!empty($error_message[0]) && $error_message[0] == 'word-count') : ?>
+        </div>
+        <div class="alert alert-warning d-flex align-items-center container mt-4" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+                <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <use xlink:href="#check-circle-fill" />
+            </svg>
+            <div>
+                メッセージは100文字以内で入力してください
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($error_message[0]) && $error_message[0] == 'cannot-write') : ?>
+        </div>
+        <div class="alert alert-warning d-flex align-items-center container mt-4" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+                <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <use xlink:href="#check-circle-fill" />
+            </svg>
+            <div>
+                書き込みに失敗しました
+            </div>
+        </div>
     <?php endif; ?>
 
     <div class="container mt-5">
@@ -209,8 +236,8 @@ $pdo = null;
     <hr>
     <div class="container my-5">
         <section>
-            <?php if (!empty($message_array)) : ?>
-                <?php foreach ($message_array as $value) : ?>
+            <?php if (!empty($message_array)) { ?>
+                <?php foreach ($message_array as $value) { ?>
                     <article class="alert-secondary">
                         <div class="info">
                             <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
@@ -218,8 +245,8 @@ $pdo = null;
                         </div>
                         <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
                     </article>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                <?php } ?>
+            <?php } ?>
         </section>
     </div>
 
