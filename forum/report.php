@@ -1,1 +1,1 @@
-<button onclick="location.href='./index.php'">報告</button>
+<button onclick="location.href='./pushreport.php'">報告</button>
