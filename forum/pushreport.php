@@ -1,3 +1,7 @@
+<?php
+
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -50,4 +54,11 @@
             </div>
         </div>
     </header>
+
+    <div class="warapper">
+
+
+
+    </div>
+
 </body>
