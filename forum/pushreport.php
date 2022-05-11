@@ -99,7 +99,8 @@ $pdo = null;
 
     <div class="warapper">
 
-
+        <p class="text-center h1 mt-4">報告ページ</p>
+        <p class="text-center">このメッセージを削除しますか？</p>
 
     </div>
 
