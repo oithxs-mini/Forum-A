@@ -26,6 +26,19 @@ $envPassword = $_ENV['PASSWORD'];
 $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
+
+// データベースに接続
+try {
+    $option = array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
+    );
+    $pdo = new PDO($dsn, $envId, $envPassword, $option);
+} catch (PDOException $e) {
+    // 接続エラーのときエラー内容を取得する
+    $error_message[] = $e->getMessage();
+}
+
 ?>
 
 <!DOCTYPE html>
