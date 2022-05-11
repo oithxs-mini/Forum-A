@@ -1,5 +1,31 @@
 <?php
+// envファイルの読み込み
+require __DIR__ . '/../vendor/autoload.php';
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
+// タイムゾーン設定
+date_default_timezone_set('Asia/Tokyo');
+
+// 変数の初期化
+$view_name = null;
+$message = array();
+$message_data = null;
+$error_message = array();
+$pdo = null;
+$stmt = null;
+$res = null;
+$option = null;
+
+//.envから
+$envDbname = $_ENV['DB_NAME'];
+$envHost = $_ENV['HOST'];
+$envId = $_ENV['ID'];
+$envPassword = $_ENV['PASSWORD'];
+$dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
+
+session_start();
 ?>
 
 <!DOCTYPE html>
