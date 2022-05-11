@@ -39,6 +39,9 @@ try {
     $error_message[] = $e->getMessage();
 }
 
+// データベースの接続を閉じる
+$pdo = null;
+
 ?>
 
 <!DOCTYPE html>
