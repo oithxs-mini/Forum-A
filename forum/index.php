@@ -243,7 +243,7 @@ $pdo = null;
                             <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
                             <!-- レポート用php読み込み -->
-                            <?php include('./repot.php'); ?>
+                            <?php include('./report.php'); ?>
                         </div>
                         <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
                     </article>
