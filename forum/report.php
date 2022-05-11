@@ -1,0 +1,1 @@
+<button onclick="location.href='./index.php'">報告</button>
