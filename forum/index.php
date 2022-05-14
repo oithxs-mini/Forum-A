@@ -160,9 +160,7 @@ $pdo = null;
                 </form>
 
                 <div class="text-end">
-                    <button type="button" class="btn btn-outline-light me-2">
-                        Login
-                    </button>
+                    <?php require('login.php') ?>
                     <button type="button" class="btn btn-warning">Sign-up</button>
                 </div>
             </div>
@@ -269,6 +267,7 @@ $pdo = null;
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <!-- JSの読み込み -->
     <script src="../js/index.js"></script>
+    <script src="../js/login.js"></script>
 </body>
 
 </html>
