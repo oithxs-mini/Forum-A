@@ -59,7 +59,7 @@ if (!empty($_POST['btn_submit'])) {
 
         // 文字数を確認
         if (100 < mb_strlen($message, 'UTF-8')) {
-            $error_message[] = 'word-count';
+            $error_message[] = 'メッセージは100文字以内で入力してください';
         }
     }
 
@@ -91,9 +91,9 @@ if (!empty($_POST['btn_submit'])) {
         }
 
         if ($res) {
-            $_SESSION['success_message'] = 'メッセージを書き込みました。';
+            $_SESSION['success_message'] = 'メッセージを書き込みました';
         } else {
-            $error_message[] = 'cannot-write';
+            $error_message[] = '書き込みに失敗しました';
         }
 
         // プリペアドステートメントを削除
@@ -169,7 +169,6 @@ $pdo = null;
 
     <!-- アラート -->
     <?php if (empty($_POST['btn_submit']) && !empty($_SESSION['success_message'])) : ?>
-        </div>
         <div class="alert alert-success d-flex align-items-center container mt-4" role="alert">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24">
                 <use xlink:href="#check-circle-fill" />
@@ -181,8 +180,7 @@ $pdo = null;
         <?php unset($_SESSION['success_message']); ?>
     <?php endif; ?>
 
-    <?php if (!empty($error_message[0]) && $error_message[0] == 'word-count') : ?>
-        </div>
+    <?php if (!empty($error_message)) : ?>
         <div class="alert alert-warning d-flex align-items-center container mt-4" role="alert">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24">
                 <use xlink:href="#exclamation-triangle-fill" />
@@ -190,21 +188,8 @@ $pdo = null;
             <use xlink:href="#check-circle-fill" />
             </svg>
             <div>
-                メッセージは100文字以内で入力してください
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <?php if (!empty($error_message[0]) && $error_message[0] == 'cannot-write') : ?>
-        </div>
-        <div class="alert alert-warning d-flex align-items-center container mt-4" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24">
-                <use xlink:href="#exclamation-triangle-fill" />
-            </svg>
-            <use xlink:href="#check-circle-fill" />
-            </svg>
-            <div>
-                書き込みに失敗しました
+                <?php foreach ($error_message as $value) ?>
+                <?php print $value; ?>
             </div>
         </div>
     <?php endif; ?>
