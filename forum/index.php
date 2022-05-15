@@ -161,33 +161,36 @@ $pdo = null;
 
                 <div class="text-end">
                     <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Login</button>
-                    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog ">
-                            <div class="modal-content bg-light">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark" id="exampleModalLabel">ログイン</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body text-start">
-                                    <form>
+                    <form action="login.php" method="POST">
+                        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog ">
+                                <div class="modal-content bg-light">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title text-dark" id="exampleModalLabel">ログイン</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
                                         <div class="mb-3">
                                             <label for="recipient-name" class="col-form-label text-dark">ユーザー名</label>
-                                            <input type="text" class="form-control" id="recipient-name">
+                                            <input type="text" class="form-control liarea" id="liuser" name="">
                                         </div>
                                         <div class="mb-3">
                                             <label for="message-text" class="col-form-label text-dark">パスワード</label>
-                                            <input type="text" class="form-control" id="recipient-name">
+                                            <input type="text" class="form-control liarea" id="lipass" name="">
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                                    <button type="button" class="btn btn-primary">ログイン</button>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                                        <button type="button" class="btn btn-primary" id="loginbtn" disabled>ログイン</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" data-bs-whatever="@mdo">Sign-up</button>
+                    </form>
+                </div>
+
+                <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" data-bs-whatever="@mdo">Sign-up</button>
+                <form action="signup.php" method="POST">
                     <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog ">
                             <div class="modal-content bg-light">
@@ -196,29 +199,27 @@ $pdo = null;
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-start">
-                                    <form>
-                                        <div class="mb-3">
-                                            <label for="recipient-name" class="col-form-label text-dark">ユーザー名</label>
-                                            <input type="text" class="form-control" id="recipient-name">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="message-text" class="col-form-label text-dark">パスワード</label>
-                                            <input type="text" class="form-control" id="recipient-name">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="message-text" class="col-form-label text-dark">パスワードの確認</label>
-                                            <input type="text" class="form-control" id="recipient-name">
-                                        </div>
-                                    </form>
+                                    <div class="mb-3">
+                                        <label for="recipient-name" class="col-form-label text-dark">ユーザー名</label>
+                                        <input type="text" class="form-control suarea" id="suuser" name="suusername">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message-text" class="col-form-label text-dark">パスワード</label>
+                                        <input type="text" class="form-control suarea" id="supass" name="supassword">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message-text" class="col-form-label text-dark">パスワードの確認</label>
+                                        <input type="text" class="form-control suarea" id="supass2" name="supasswords">
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                                    <button type="button" class="btn btn-primary">サインアップ</button>
+                                    <button type="button" class="btn btn-primary" id="signupbtn" disabled>サインアップ</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </header>
