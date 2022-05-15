@@ -174,13 +174,11 @@ $pdo = null;
                 <use xlink:href="#check-circle-fill" />
             </svg>
             <div>
-                メッセージを書き込みました
+                <strong>メッセージを書き込みました</strong>
             </div>
         </div>
         <?php unset($_SESSION['success_message']); ?>
-    <?php endif; ?>
-
-    <?php if (!empty($error_message)) : ?>
+    <?php elseif (!empty($error_message)) : ?>
         <div class="alert alert-warning d-flex align-items-center container mt-4" role="alert">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24">
                 <use xlink:href="#exclamation-triangle-fill" />
@@ -189,7 +187,7 @@ $pdo = null;
             </svg>
             <div>
                 <?php foreach ($error_message as $value) ?>
-                <?php print $value; ?>
+                <strong><?php print $value; ?></strong>
             </div>
         </div>
     <?php endif; ?>
