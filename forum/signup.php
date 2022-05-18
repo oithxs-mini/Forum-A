@@ -18,9 +18,25 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
     );
-    $pdo = new PDO($dsn, $envId, $envPassword, $option);
+    $pdo = new PDO($dsn, $envId, $envPassword);
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
     $error_message[] = $e->getMessage();
     exit;
 }
+
+$pdo->beginTransaction();
+
+$user = $_POST['user'];
+$password = $_POST['password'];
+
+$stmt = $pdo->prepare('INSERT INTO account (user, password) VALUES (:user, :password)');
+
+$stmt->bindParam(':user', $user);
+$stmt->bindParam(':password', $password);
+
+$stmt->execute();
+$pdo->commit();
+
+$pdo = null;
+$stmt = null;

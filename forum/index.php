@@ -172,16 +172,16 @@ $pdo = null;
                                     <div class="modal-body text-start">
                                         <div class="mb-3">
                                             <label for="recipient-name" class="col-form-label text-dark">ユーザー名</label>
-                                            <input type="text" class="form-control liarea" id="liuser" name="">
+                                            <input type="text" class="form-control liarea" id="liuser" name="user">
                                         </div>
                                         <div class="mb-3">
                                             <label for="message-text" class="col-form-label text-dark">パスワード</label>
-                                            <input type="text" class="form-control liarea" id="lipass" name="">
+                                            <input type="text" class="form-control liarea" id="lipass" name="password">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                                        <button type="button" class="btn btn-primary" id="loginbtn" disabled>ログイン</button>
+                                        <button type="submit" class="btn btn-primary" id="loginbtn" disabled>ログイン</button>
                                     </div>
                                 </div>
                             </div>
@@ -201,20 +201,20 @@ $pdo = null;
                                 <div class="modal-body text-start">
                                     <div class="mb-3">
                                         <label for="recipient-name" class="col-form-label text-dark">ユーザー名</label>
-                                        <input type="text" class="form-control suarea" id="suuser" name="suusername">
+                                        <input type="text" class="form-control suarea" id="suuser" name="user">
                                     </div>
                                     <div class="mb-3">
                                         <label for="message-text" class="col-form-label text-dark">パスワード</label>
-                                        <input type="text" class="form-control suarea" id="supass" name="supassword">
+                                        <input type="text" class="form-control suarea" id="supass" name="password">
                                     </div>
                                     <div class="mb-3">
                                         <label for="message-text" class="col-form-label text-dark">パスワードの確認</label>
-                                        <input type="text" class="form-control suarea" id="supass2" name="supasswords">
+                                        <input type="text" class="form-control suarea" id="supass2" name="passwords">
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                                    <button type="button" class="btn btn-primary" id="signupbtn" disabled>サインアップ</button>
+                                    <button type="submit" class="btn btn-primary" id="signupbtn" disabled>サインアップ</button>
                                 </div>
                             </div>
                         </div>
