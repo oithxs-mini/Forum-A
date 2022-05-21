@@ -18,28 +18,27 @@ $password = password_hash(htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-
 // データベースに接続
 try {
     $pdo = new PDO($dsn, $envId, $envPassword);
+    $sql = "SELECT * FROM account WHERE user = :user";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':user', $user);
+    $stmt->execute();
+    $member = $stmt->fetch();
+
+    if (!empty($member['user'])) {
+        $_SESSION['error_message'] = "ユーザー名: $user はすでに存在します\n再登録してください";
+    } else {
+        $sql = "INSERT INTO account(user,password) VALUES (:user, :password)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':user', $user);
+        $stmt->bindValue(':password', $password);
+        $stmt->execute();
+        $msg = '会員登録が完了しました';
+    }
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
     $error_message[] = $e->getMessage();
     exit;
+} finally {
+    header('Location: ./index.php', $error_message);
+    $pdo = null;
 }
-
-$sql = "SELECT * FROM account WHERE user = :user";
-$stmt = $pdo->prepare($sql);
-$stmt->bindValue(':user', $user);
-$stmt->execute();
-$member = $stmt->fetch();
-
-if (!empty($member['user'])) {
-    echo "ユーザー名: $user はすでに存在します\n再登録してください";
-} else {
-    $sql = "INSERT INTO account(user,password) VALUES (:user, :password)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':user', $user);
-    $stmt->bindValue(':password', $password);
-    $stmt->execute();
-    $msg = '会員登録が完了しました';
-}
-
-$pdo = null;
-$stmt = null;
