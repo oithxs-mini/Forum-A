@@ -25,20 +25,21 @@ try {
     $member = $stmt->fetch();
 
     if (!empty($member['user'])) {
-        $_SESSION['error_message'] = "ユーザー名: $user はすでに存在します\n再登録してください";
+        $res_messageout[] = "ユーザー名: $user はすでに存在します\n再登録してください";
     } else {
         $sql = "INSERT INTO account(user,password) VALUES (:user, :password)";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':user', $user);
         $stmt->bindValue(':password', $password);
         $stmt->execute();
-        $msg = '会員登録が完了しました';
+        $res_messageok[] = '会員登録が完了しました';
     }
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
-    $error_message[] = $e->getMessage();
+    $res_message[] = $e->getMessage();
     exit;
 } finally {
-    header('Location: ./index.php', $error_message);
+    // echo json_encode('aaa');
+    echo 'test';
     $pdo = null;
 }

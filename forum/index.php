@@ -190,7 +190,7 @@ $pdo = null;
                 </div>
 
                 <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" data-bs-whatever="@mdo">Sign-up</button>
-                <form action="signup.php" method="POST">
+                <form id="signupform">
                     <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog ">
                             <div class="modal-content bg-light">
@@ -223,7 +223,7 @@ $pdo = null;
             </div>
         </div>
     </header>
-
+<div id="result"></div>
     <!-- アラート -->
     <?php if (empty($_POST['btn_submit']) && !empty($_SESSION['success_message'])) : ?>
         <div class="alert alert-success d-flex align-items-center container mt-4" role="alert">
@@ -307,7 +307,6 @@ $pdo = null;
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <!-- JSの読み込み -->
     <script src="../js/index.js"></script>
-    <script src="../js/login.js"></script>
 </body>
 
 </html>

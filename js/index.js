@@ -37,3 +37,26 @@ $(".suarea").on("input", function () {
     $("#signupbtn").prop("disabled", true); //disabled を有効にする＝ボタンが押せない
   }
 });
+
+/**
+ * サインアップの処理
+ */
+
+$(function () {
+  $("#signupbtn").click(function () {
+    $.ajax({
+      url: "../forum/signup.php",
+      type: "POST",
+      data: $("#signupform").serialize(),
+      dataType: "json",
+    })
+      .done(function (data) {
+        console.log(data);
+        // $("#result").text(data);
+      })
+      .fail(function () {
+        console.log(data);
+        // $("#result").text(data);
+      });
+  });
+});
