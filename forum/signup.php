@@ -12,12 +12,11 @@ $envId = $_ENV['ID'];
 $envPassword = $_ENV['PASSWORD'];
 $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
+$user = $_POST['user'];
+$password = password_hash(htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8'), PASSWORD_DEFAULT);
+
 // データベースに接続
 try {
-    $option = array(
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
-    );
     $pdo = new PDO($dsn, $envId, $envPassword);
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
@@ -25,18 +24,22 @@ try {
     exit;
 }
 
-$pdo->beginTransaction();
-
-$user = $_POST['user'];
-$password = $_POST['password'];
-
-$stmt = $pdo->prepare('INSERT INTO account (user, password) VALUES (:user, :password)');
-
-$stmt->bindParam(':user', $user);
-$stmt->bindParam(':password', $password);
-
+$sql = "SELECT * FROM account WHERE user = :user";
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':user', $user);
 $stmt->execute();
-$pdo->commit();
+$member = $stmt->fetch();
+
+if (!empty($member['user'])) {
+    echo "ユーザー名: $user はすでに存在します\n再登録してください";
+} else {
+    $sql = "INSERT INTO account(user,password) VALUES (:user, :password)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':user', $user);
+    $stmt->bindValue(':password', $password);
+    $stmt->execute();
+    $msg = '会員登録が完了しました';
+}
 
 $pdo = null;
 $stmt = null;
