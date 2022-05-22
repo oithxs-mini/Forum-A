@@ -60,3 +60,18 @@ $(function () {
       });
   });
 });
+
+/**
+ * ログインの処理
+ */
+
+$(function () {
+  $("#loginbtn").click(function () {
+    $.ajax({
+      url: "../forum/login.php",
+      type: "POST",
+      data: $("#loginform").serialize(),
+      dataType: "json",
+    });
+  });
+});

@@ -161,7 +161,7 @@ $pdo = null;
 
                 <div class="text-end">
                     <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Login</button>
-                    <form action="login.php" method="POST">
+                    <form id="loginform">
                         <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog ">
                                 <div class="modal-content bg-light">
