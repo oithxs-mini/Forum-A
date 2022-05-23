@@ -31,6 +31,7 @@ session_start();
 if (isset($_POST['logout'])) {
     $_SESSION = array(); //セッションの中身をすべて削除
     session_destroy(); //セッションを破壊
+    $login_message = '正常にログアウトしました';
 }
 
 // データベースに接続
@@ -165,7 +166,7 @@ $pdo = null;
                     <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search" />
                 </form>
 
-                <?php if (empty($_SESSION['view_name'])) : ?>
+                <?php if (empty($_SESSION['view_name']) || $_SESSION['view_name'] == "匿名") : ?>
 
                     <div class="text-end">
                         <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Login</button>
@@ -266,6 +267,15 @@ $pdo = null;
                 <strong><?php print $value; ?></strong>
             </div>
         </div>
+    <?php elseif (!empty($login_message)) : ?>
+        <div class="alert alert-primary d-flex align-items-center container mt-4" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="情報:">
+                <use xlink:href="#info-fill" />
+            </svg>
+            <div>
+                <strong><?php print $login_message; ?></strong>
+            </div>
+        </div>
     <?php endif; ?>
 
     <div class="container mt-5">
@@ -274,7 +284,9 @@ $pdo = null;
                 <label for="exampleFormControlInput1" class="form-label">表示名</label>
                 <input type="text" name="view_name" class="form-control messagearea" id="username" value="<?php if (!empty($_SESSION['view_name'])) {
                                                                                                                 echo htmlspecialchars($_SESSION['view_name'], ENT_QUOTES, 'UTF-8');
-                                                                                                            } ?>" />
+                                                                                                            } else {
+                                                                                                                echo '匿名';
+                                                                                                            } ?>" readonly />
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">メッセージ</label>
