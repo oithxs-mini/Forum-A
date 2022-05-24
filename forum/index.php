@@ -276,6 +276,16 @@ $pdo = null;
                 <strong><?php print $login_message; ?></strong>
             </div>
         </div>
+    <?php elseif (!empty($_SESSION['login_message'])) : ?>
+        <div class="alert alert-primary d-flex align-items-center container mt-4" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="情報:">
+                <use xlink:href="#info-fill" />
+            </svg>
+            <div>
+                <strong><?php print $_SESSION['login_message']; ?></strong>
+            </div>
+        </div>
+        <?php unset($_SESSION['login_message']); ?>
     <?php endif; ?>
 
     <div class="container mt-5">
