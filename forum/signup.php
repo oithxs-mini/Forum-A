@@ -1,4 +1,5 @@
 <?php
+session_start();
 // envファイルの読み込み
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -25,21 +26,19 @@ try {
     $member = $stmt->fetch();
 
     if (!empty($member['user'])) {
-        $res_messageout[] = "ユーザー名: $user はすでに存在します\n再登録してください";
+        $_SESSION['login_message'] = "ユーザー名: $user はすでに存在します <br> 再登録してください";
     } else {
         $sql = "INSERT INTO account(user,password) VALUES (:user, :password)";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':user', $user);
         $stmt->bindValue(':password', $password);
         $stmt->execute();
-        $res_messageok[] = '会員登録が完了しました';
+        $_SESSION['login_message'] = "会員登録が完了しました";
     }
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
-    $res_message[] = $e->getMessage();
+    $_SESSION['login_message'] = $e->getMessage();
     exit;
 } finally {
-    // echo json_encode('aaa');
-    echo 'test';
     $pdo = null;
 }
