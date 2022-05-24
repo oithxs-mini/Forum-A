@@ -146,13 +146,13 @@ $pdo = null;
     <header class="p-3 bg-dark text-white">
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <a href="../" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                     <span class="title h1">HxS掲示板</span>
                 </a>
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-3 justify-content-center mb-md-0">
                     <li>
-                        <a href="/" class="nav-link px-2 text-white">Home</a>
+                        <a href="../" class="nav-link px-2 text-white">Home</a>
                     </li>
                     <li>
                         <a href="./" class="nav-link px-2 text-secondary">Forum</a>
@@ -202,7 +202,7 @@ $pdo = null;
 
                     <div class="text-end">
                         <form method="post">
-                            <button type="submit" name="logout" id="logoutbtn" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Logout
+                            <button type="submit" name="logout" id="logoutbtn" class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Logout
                             </button>
                         </form>
                     </div>
