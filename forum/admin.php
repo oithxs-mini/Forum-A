@@ -28,6 +28,14 @@ $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
 
+//ログアウト
+if (isset($_POST['logout'])) {
+    $_SESSION = array(); //セッションの中身をすべて削除
+    session_destroy(); //セッションを破壊
+    $login_message = '正常にログアウトしました';
+    header('Location: ./');
+}
+
 if (!empty($_GET['btn_logout'])) {
     unset($_SESSION['admin_login']);
 }
@@ -88,13 +96,13 @@ $pdo = null;
     <header class="p-3 bg-dark text-white">
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <a href="../" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                     <span class="title h1">HxS掲示板</span>
                 </a>
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-3 justify-content-center mb-md-0">
                     <li>
-                        <a href="/" class="nav-link px-2 text-white">Home</a>
+                        <a href="../" class="nav-link px-2 text-white">Home</a>
                     </li>
                     <li>
                         <a href="./" class="nav-link px-2 text-secondary">Forum</a>
@@ -108,12 +116,80 @@ $pdo = null;
                     <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search" />
                 </form>
 
-                <div class="text-end">
-                    <button type="button" class="btn btn-outline-light me-2">
-                        Login
-                    </button>
-                    <button type="button" class="btn btn-warning">Sign-up</button>
-                </div>
+                <?php if (empty($_SESSION['view_name']) || $_SESSION['view_name'] == "匿名") : ?>
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Login</button>
+                        <form id="loginform">
+                            <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog ">
+                                    <div class="modal-content bg-light">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-dark" id="exampleModalLabel">ログイン</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-start">
+                                            <div class="mb-3">
+                                                <label for="recipient-name" class="col-form-label text-dark">ユーザー名</label>
+                                                <input type="text" class="form-control liarea" id="liuser" name="user">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="message-text" class="col-form-label text-dark">パスワード</label>
+                                                <input type="text" class="form-control liarea" id="lipass" name="password">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                                            <button type="submit" name="login" class="btn btn-primary" id="loginbtn" disabled>ログイン</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                <?php else : ?>
+
+                    <div class="text-end">
+                        <form method="post">
+                            <button type="submit" name="logout" id="logoutbtn" class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Logout
+                            </button>
+                        </form>
+                    </div>
+
+                <?php endif; ?>
+
+                <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" data-bs-whatever="@mdo">Sign-up</button>
+                <form id="signupform">
+                    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog ">
+                            <div class="modal-content bg-light">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-dark" id="exampleModalLabel">サインアップ</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    <div class="mb-3">
+                                        <label for="recipient-name" class="col-form-label text-dark">ユーザー名</label>
+                                        <input type="text" class="form-control suarea" id="suuser" name="user">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message-text" class="col-form-label text-dark">パスワード</label>
+                                        <input type="text" class="form-control suarea" id="supass" name="password">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message-text" class="col-form-label text-dark">パスワードの確認</label>
+                                        <input type="text" class="form-control suarea" id="supass2" name="passwords">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                                    <button type="submit" class="btn btn-primary" id="signupbtn" disabled>サインアップ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </header>
@@ -136,7 +212,7 @@ $pdo = null;
 
     <div class="container my-5">
         <section>
-            <?php if (!empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true) : ?>
+            <?php if (!empty($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') : ?>
 
                 <form method="get" action="./download.php">
 
@@ -167,18 +243,8 @@ $pdo = null;
                         </article>
                     <?php endforeach; ?>
                 <?php endif; ?>
-                <form method="get" action="">
-                    <input type="submit" name="btn_logout" value="ログアウト">
-                </form>
             <?php else : ?>
-                <!-- ログインフォーム -->
-                <form method="post">
-                    <div>
-                        <label for="admin_password">ログインパスワード</label>
-                        <input id="admin_password" type="password" name="admin_password" value="">
-                    </div>
-                    <input type="submit" name="btn_submit" value="ログイン">
-                </form>
+                <div class="text-center h2">ログインしてください</div>
 
             <?php endif; ?>
         </section>
