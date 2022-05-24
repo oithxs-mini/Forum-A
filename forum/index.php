@@ -121,6 +121,9 @@ if (!empty($pdo)) {
 // データベースの接続を閉じる
 $pdo = null;
 
+if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
+    header('Location: ./admin.php');
+}
 ?>
 
 <!DOCTYPE html>
