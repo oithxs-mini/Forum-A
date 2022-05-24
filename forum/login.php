@@ -24,16 +24,16 @@ try {
     $stmt->execute();
     $member = $stmt->fetch();
 
-    
+
 
     //指定したハッシュがパスワードにマッチしているかチェック
     if (password_verify($_POST['password'], $member['password'])) {
         //DBのユーザー情報をセッションに保存
         echo $member['user'];
         $_SESSION['view_name'] = $member['user'];
-        // $_SESSION['name'] = $member['name'];
+        $_SESSION['login_message'] = '正常にログインしました';
     } else {
-        $msg = 'メールアドレスもしくはパスワードが間違っています。';
+        $_SESSION['login_message'] = 'ユーザー名もしくはパスワードが間違っています。';
     }
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
