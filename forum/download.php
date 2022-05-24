@@ -35,7 +35,7 @@ if (!empty($_GET['limit'])) {
     }
 }
 
-if (!empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true) {
+if (!empty($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
 
     // データベースに接続
     try {
