@@ -28,7 +28,7 @@ $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 session_start();
 
 // 管理者としてログインしているか確認
-if (empty($_SESSION['admin_login']) || $_SESSION['admin_login'] !== true) {
+if (empty($_SESSION['view_name']) || $_SESSION['view_name'] != 'admin') {
 
     // ログインページへリダイレクト
     header("Location: ./admin.php");

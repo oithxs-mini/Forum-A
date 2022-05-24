@@ -27,6 +27,13 @@ $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
 
+//ログアウト
+if (isset($_POST['logout'])) {
+    $_SESSION = array(); //セッションの中身をすべて削除
+    session_destroy(); //セッションを破壊
+    $login_message = '正常にログアウトしました';
+}
+
 // データベースに接続
 try {
     $option = array(
@@ -59,7 +66,7 @@ if (!empty($_POST['btn_submit'])) {
 
         // 文字数を確認
         if (100 < mb_strlen($message, 'UTF-8')) {
-            $error_message[] = 'word-count';
+            $error_message[] = 'メッセージは100文字以内で入力してください';
         }
     }
 
@@ -91,9 +98,9 @@ if (!empty($_POST['btn_submit'])) {
         }
 
         if ($res) {
-            $_SESSION['success_message'] = 'メッセージを書き込みました。';
+            $_SESSION['success_message'] = 'メッセージを書き込みました';
         } else {
-            $error_message[] = 'cannot-write';
+            $error_message[] = '書き込みに失敗しました';
         }
 
         // プリペアドステートメントを削除
@@ -114,6 +121,9 @@ if (!empty($pdo)) {
 // データベースの接続を閉じる
 $pdo = null;
 
+if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
+    header('Location: ./admin.php');
+}
 ?>
 
 <!DOCTYPE html>
@@ -139,13 +149,13 @@ $pdo = null;
     <header class="p-3 bg-dark text-white">
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <a href="../" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                     <span class="title h1">HxS掲示板</span>
                 </a>
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-3 justify-content-center mb-md-0">
                     <li>
-                        <a href="/" class="nav-link px-2 text-white">Home</a>
+                        <a href="../" class="nav-link px-2 text-white">Home</a>
                     </li>
                     <li>
                         <a href="./" class="nav-link px-2 text-secondary">Forum</a>
@@ -159,32 +169,96 @@ $pdo = null;
                     <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search" />
                 </form>
 
-                <div class="text-end">
-                    <button type="button" class="btn btn-outline-light me-2">
-                        Login
-                    </button>
-                    <button type="button" class="btn btn-warning">Sign-up</button>
-                </div>
+                <?php if (empty($_SESSION['view_name']) || $_SESSION['view_name'] == "匿名") : ?>
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Login</button>
+                        <form id="loginform">
+                            <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog ">
+                                    <div class="modal-content bg-light">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-dark" id="exampleModalLabel">ログイン</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-start">
+                                            <div class="mb-3">
+                                                <label for="recipient-name" class="col-form-label text-dark">ユーザー名</label>
+                                                <input type="text" class="form-control liarea" id="liuser" name="user">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="message-text" class="col-form-label text-dark">パスワード</label>
+                                                <input type="text" class="form-control liarea" id="lipass" name="password">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                                            <button type="submit" name="login" class="btn btn-primary" id="loginbtn" disabled>ログイン</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                <?php else : ?>
+
+                    <div class="text-end">
+                        <form method="post">
+                            <button type="submit" name="logout" id="logoutbtn" class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Logout
+                            </button>
+                        </form>
+                    </div>
+
+                <?php endif; ?>
+
+                <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" data-bs-whatever="@mdo">Sign-up</button>
+                <form id="signupform">
+                    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog ">
+                            <div class="modal-content bg-light">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-dark" id="exampleModalLabel">サインアップ</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    <div class="mb-3">
+                                        <label for="recipient-name" class="col-form-label text-dark">ユーザー名</label>
+                                        <input type="text" class="form-control suarea" id="suuser" name="user">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message-text" class="col-form-label text-dark">パスワード</label>
+                                        <input type="text" class="form-control suarea" id="supass" name="password">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message-text" class="col-form-label text-dark">パスワードの確認</label>
+                                        <input type="text" class="form-control suarea" id="supass2" name="passwords">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                                    <button type="submit" class="btn btn-primary" id="signupbtn" disabled>サインアップ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </header>
 
     <!-- アラート -->
     <?php if (empty($_POST['btn_submit']) && !empty($_SESSION['success_message'])) : ?>
-        </div>
         <div class="alert alert-success d-flex align-items-center container mt-4" role="alert">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24">
                 <use xlink:href="#check-circle-fill" />
             </svg>
             <div>
-                メッセージを書き込みました
+                <strong>メッセージを書き込みました</strong>
             </div>
         </div>
         <?php unset($_SESSION['success_message']); ?>
-    <?php endif; ?>
-
-    <?php if (!empty($error_message[0]) && $error_message[0] == 'word-count') : ?>
-        </div>
+    <?php elseif (!empty($error_message)) : ?>
         <div class="alert alert-warning d-flex align-items-center container mt-4" role="alert">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24">
                 <use xlink:href="#exclamation-triangle-fill" />
@@ -192,23 +266,29 @@ $pdo = null;
             <use xlink:href="#check-circle-fill" />
             </svg>
             <div>
-                メッセージは100文字以内で入力してください
+                <?php foreach ($error_message as $value) ?>
+                <strong><?php print $value; ?></strong>
             </div>
         </div>
-    <?php endif; ?>
-
-    <?php if (!empty($error_message[0]) && $error_message[0] == 'cannot-write') : ?>
-        </div>
-        <div class="alert alert-warning d-flex align-items-center container mt-4" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24">
-                <use xlink:href="#exclamation-triangle-fill" />
-            </svg>
-            <use xlink:href="#check-circle-fill" />
+    <?php elseif (!empty($login_message)) : ?>
+        <div class="alert alert-primary d-flex align-items-center container mt-4" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="情報:">
+                <use xlink:href="#info-fill" />
             </svg>
             <div>
-                書き込みに失敗しました
+                <strong><?php print $login_message; ?></strong>
             </div>
         </div>
+    <?php elseif (!empty($_SESSION['login_message'])) : ?>
+        <div class="alert alert-primary d-flex align-items-center container mt-4" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="情報:">
+                <use xlink:href="#info-fill" />
+            </svg>
+            <div>
+                <strong><?php print $_SESSION['login_message']; ?></strong>
+            </div>
+        </div>
+        <?php unset($_SESSION['login_message']); ?>
     <?php endif; ?>
 
     <div class="container mt-5">
@@ -217,7 +297,9 @@ $pdo = null;
                 <label for="exampleFormControlInput1" class="form-label">表示名</label>
                 <input type="text" name="view_name" class="form-control messagearea" id="username" value="<?php if (!empty($_SESSION['view_name'])) {
                                                                                                                 echo htmlspecialchars($_SESSION['view_name'], ENT_QUOTES, 'UTF-8');
-                                                                                                            } ?>" />
+                                                                                                            } else {
+                                                                                                                echo '匿名';
+                                                                                                            } ?>" readonly />
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">メッセージ</label>
