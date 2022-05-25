@@ -17,6 +17,7 @@ $pdo = null;
 $stmt = null;
 $res = null;
 $option = null;
+$_GETreportId = null;
 
 //.envから
 $envDbname = $_ENV['DB_NAME'];
