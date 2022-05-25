@@ -17,7 +17,6 @@ $pdo = null;
 $stmt = null;
 $res = null;
 $option = null;
-$_GETreportId = null;
 
 //.envから
 $envDbname = $_ENV['DB_NAME'];
@@ -104,7 +103,7 @@ $pdo = null;
         <p class="text-center">このメッセージを削除しますか？</p>
 
         <div class="container my-5">
-          <p><?php echo nl2br(htmlspecialchars($_GETreportId['message'], ENT_QUOTES, 'UTF-8')); ?></p>
+          <p><?php echo $message = $_GET['message_id']; ?></p>
         </div>
 
     </div>
