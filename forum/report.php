@@ -103,7 +103,11 @@ $pdo = null;
         <p class="text-center">このメッセージを削除しますか？</p>
 
         <div class="container my-5">
-          <p><?php echo $message = $_GET['message_id']; ?></p>
+          <article class="alert-secondary">
+            <div class="info">
+              <p><?php echo $message = $_GET['message_id']; ?></p>
+            </div>
+          </article>
         </div>
 
     </div>
