@@ -27,12 +27,13 @@ $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
 
-// データベースに接続
+// データベースに接続できたとき以下実行
 try {
     $option = array(
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
     );
+    //PDO(データベースの接続)オブジェクト
     $pdo = new PDO($dsn, $envId, $envPassword, $option);
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
@@ -107,7 +108,7 @@ if (!empty($_POST['btn_submit'])) {
 if (!empty($pdo)) {
 
     // メッセージのデータを取得する
-    $sql = "SELECT view_name,message,post_date FROM message ORDER BY post_date DESC";
+    $sql = "SELECT * FROM message ORDER BY post_date DESC";
     $message_array = $pdo->query($sql);
 }
 
@@ -225,6 +226,8 @@ $pdo = null;
                                                                                                         echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
                                                                                                     } ?></textarea>
             </div>
+
+
             <div class="d-grid gap-2 col-6 mx-auto">
                 <button type="submit" name="btn_submit" class="btn btn-primary" id="sendbtn" value="書き込む" disabled>
                     書き込む
@@ -244,6 +247,11 @@ $pdo = null;
                             <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
                         </div>
                         <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
+                        <?php
+                        //以下goodbtn.php参照する
+                        $p = $value['id'];
+                        require('goodbtn.php');
+                        ?>
                     </article>
                 <?php } ?>
             <?php } ?>
@@ -269,6 +277,7 @@ $pdo = null;
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <!-- JSの読み込み -->
     <script src="../js/index.js"></script>
+    <script src="../js/good.js"></script>
 </body>
 
 </html>
