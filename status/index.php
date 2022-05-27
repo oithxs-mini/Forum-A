@@ -1,4 +1,5 @@
 <?php
+session_start();
 // envファイルの読み込み
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -11,6 +12,9 @@ $envGrafanaAccess = $_ENV['GRAFANA_ACCESS'];
 $envGrafanaWorker = $_ENV['GRAFANA_WORKER'];
 $envGrafanaDuration = $_ENV['GRAFANA_DURATION'];
 
+if (isset($_POST['windowSize'])) {
+  $_SESSION['windowSize'] = $_POST['windowSize'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -59,13 +63,13 @@ $envGrafanaDuration = $_ENV['GRAFANA_DURATION'];
     </div>
   </header>
 
-  <div><iframe src="<?php echo $envGrafanaUptime ?>" width="450" height="200" frameborder="0"></iframe></div>
+  <div class="mt-3"><iframe src="<?php echo $envGrafanaUptime ?>" width="<?php echo $_SESSION['windowSize'] ?>" height="200" frameborder="0"></iframe></div>
   <hr>
-  <div><iframe src="<?php echo $envGrafanaAccess ?>" width="450" height="450" frameborder="0"></iframe></div>
+  <div><iframe src="<?php echo $envGrafanaAccess ?>" width="<?php echo $_SESSION['windowSize'] ?>" height="450" frameborder="0"></iframe></div>
   <hr>
-  <div><iframe src="<?php echo $envGrafanaWorker ?>" width="450" height="450" frameborder="0"></iframe></div>
+  <div><iframe src="<?php echo $envGrafanaWorker ?>" width="<?php echo $_SESSION['windowSize'] ?>" height="450" frameborder="0"></iframe></div>
   <hr>
-  <div><iframe src="<?php echo $envGrafanaDuration ?>" width="450" height="450" frameborder="0"></iframe></div>
+  <div class="mb-3"><iframe src="<?php echo $envGrafanaDuration ?>" width="<?php echo $_SESSION['windowSize'] ?>" height="450" frameborder="0"></iframe></div>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
@@ -74,6 +78,7 @@ $envGrafanaDuration = $_ENV['GRAFANA_DURATION'];
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <!-- JSの読み込み -->
   <script src="../js/index.js"></script>
+  <script src="../js/status.js"></script>
 </body>
 
 </html>
