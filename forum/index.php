@@ -161,7 +161,7 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
                         <a href="./" class="nav-link px-2 text-secondary">Forum</a>
                     </li>
                     <li>
-                        <a href="../about/" class="nav-link px-2 text-white">About</a>
+                        <a href="../status/" class="nav-link px-2 text-white">Status</a>
                     </li>
                 </ul>
 
