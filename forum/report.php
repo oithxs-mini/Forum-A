@@ -108,6 +108,10 @@ $pdo = null;
               <p><?php echo $message = $_GET['message_id']; ?></p>
             </div>
           </article>
+          <div class="text">
+              <h2>はい</h2>
+              <h2>いいえ</h2>
+          </div>
         </div>
 
     </div>
