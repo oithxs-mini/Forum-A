@@ -67,6 +67,9 @@ $(function () {
 
 $(function () {
   $("#loginbtn").click(function () {
+    // 通常のPOST処理を無効
+    // event.preventDefault();
+
     $.ajax({
       url: "../forum/login.php",
       type: "POST",
