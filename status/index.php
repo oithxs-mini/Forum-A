@@ -1,5 +1,6 @@
 <?php
 session_start();
+unset($_SESSION['seword']);
 // envファイルの読み込み
 require __DIR__ . '/../vendor/autoload.php';
 
