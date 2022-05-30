@@ -173,7 +173,7 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
 
                     <div class="text-end">
                         <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Login</button>
-                        <form id="loginform">
+                        <form id="loginform" method="POST">
                             <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog ">
                                     <div class="modal-content bg-light">
@@ -213,7 +213,7 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
                 <?php endif; ?>
 
                 <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" data-bs-whatever="@mdo">Sign-up</button>
-                <form id="signupform">
+                <form id="signupform" method="POST">
                     <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog ">
                             <div class="modal-content bg-light">
