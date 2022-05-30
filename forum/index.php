@@ -321,7 +321,7 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
     <hr>
 
     <div class="container">
-        <div class="row gy-2 gx-3 align-items-left">
+        <div class="d-flex flex-row-reverse bd-highlight">
             <div class="col-auto">
                 <input type="text" class="form-control" id="serchcontent" placeholder="<?php if (isset($_SESSION['seword'])) {
                                                                                             echo $_SESSION['seword'];
