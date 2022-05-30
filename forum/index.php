@@ -319,15 +319,20 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
     </div>
 
     <hr>
-    <div class="container col-4 text-end">
-        <div class="form-group">
-            <input type="text" class="form-control" id="serchcontent" placeholder="<?php if (isset($_SESSION['seword'])) {
-                                                                                        echo $_SESSION['seword'];
-                                                                                    } else {
-                                                                                        echo "投稿内容を検索";
-                                                                                    } ?>">
+
+    <div class="container">
+        <div class="row gy-2 gx-3 align-items-left">
+            <div class="col-auto">
+                <input type="text" class="form-control" id="serchcontent" placeholder="<?php if (isset($_SESSION['seword'])) {
+                                                                                            echo $_SESSION['seword'];
+                                                                                        } else {
+                                                                                            echo "投稿内容を検索";
+                                                                                        } ?>">
+
+            </div>
         </div>
     </div>
+
     <div class="container my-5">
         <section>
             <?php if (!empty($message_array)) { ?>
