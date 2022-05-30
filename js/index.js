@@ -78,3 +78,22 @@ $(function () {
     });
   });
 });
+
+/**
+ * 投稿内容の検索
+ */
+
+$(function () {
+  $("#serchcontent").change(function (event) {
+    let word = $(this).val();
+    // console.log(word);
+    $.ajax({
+      url: "../forum/index.php",
+      type: "POST",
+      data: {
+        seword: word,
+      },
+      dataType: "json",
+    });
+  });
+});
