@@ -27,6 +27,9 @@ $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
 
+if (isset($_POST['seword'])) {
+    $_SESSION['seword'] = $_POST['seword'];
+}
 //ログアウト
 if (isset($_POST['logout'])) {
     $_SESSION = array(); //セッションの中身をすべて削除
@@ -316,18 +319,39 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
     </div>
 
     <hr>
+    <div class="container col-4 text-end">
+        <div class="form-group">
+            <input type="text" class="form-control" id="serchcontent" placeholder="<?php if (isset($_SESSION['seword'])) {
+                                                                                        echo $_SESSION['seword'];
+                                                                                    } else {
+                                                                                        echo "投稿内容を検索";
+                                                                                    } ?>">
+        </div>
+    </div>
     <div class="container my-5">
         <section>
             <?php if (!empty($message_array)) { ?>
                 <?php foreach ($message_array as $value) { ?>
-                    <article class="alert-secondary">
-                        <div class="info">
-                            <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
-                            <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
-                        </div>
-                        <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
-                    </article>
-                <?php } ?>
+                    <?php if (isset($_SESSION['seword'])) {
+                        if (strpos($value['message'], $_SESSION['seword']) !== false) { ?>
+                            <article class="alert-secondary">
+                                <div class="info">
+                                    <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                                    <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
+                                </div>
+                                <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
+                            </article>
+                        <?php }
+                    } else { ?>
+                        <article class="alert-secondary">
+                            <div class="info">
+                                <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                                <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
+                            </div>
+                            <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
+                        </article>
+                <?php }
+                } ?>
             <?php } ?>
         </section>
     </div>
