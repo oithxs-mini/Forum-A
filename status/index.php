@@ -11,6 +11,7 @@ $envGrafanaUptime = $_ENV['GRAFANA_UPTIME'];
 $envGrafanaAccess = $_ENV['GRAFANA_ACCESS'];
 $envGrafanaWorker = $_ENV['GRAFANA_WORKER'];
 $envGrafanaDuration = $_ENV['GRAFANA_DURATION'];
+$envGrafanaStatus = $_ENV['GRAFANA_STATUS'];
 
 if (isset($_POST['windowSize'])) {
   $_SESSION['windowSize'] = $_POST['windowSize'];
@@ -63,7 +64,9 @@ if (isset($_POST['windowSize'])) {
     </div>
   </header>
 
-  <div class="mt-3"><iframe src="<?php echo $envGrafanaUptime ?>" width="<?php echo $_SESSION['windowSize'] ?>" height="200" frameborder="0"></iframe></div>
+  <div class="mt-3"><iframe src="<?php echo $envGrafanaStatus ?>" width="<?php echo $_SESSION['windowSize'] ?>" height="100" frameborder="0"></iframe></div>
+  <hr>
+  <div><iframe src="<?php echo $envGrafanaUptime ?>" width="<?php echo $_SESSION['windowSize'] ?>" height="200" frameborder="0"></iframe></div>
   <hr>
   <div><iframe src="<?php echo $envGrafanaAccess ?>" width="<?php echo $_SESSION['windowSize'] ?>" height="450" frameborder="0"></iframe></div>
   <hr>
