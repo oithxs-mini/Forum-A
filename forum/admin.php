@@ -23,7 +23,6 @@ $envDbname = $_ENV['DB_NAME'];
 $envHost = $_ENV['HOST'];
 $envId = $_ENV['ID'];
 $envPassword = $_ENV['PASSWORD'];
-$envAdminPassword = $_ENV['ADMINPASSWORD'];
 $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
@@ -51,14 +50,6 @@ try {
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
     $error_message[] = $e->getMessage();
-}
-
-if (!empty($_POST['btn_submit'])) {
-    if (!empty($_POST['admin_password']) && $_POST['admin_password'] === $envAdminPassword) {
-        $_SESSION['admin_login'] = true;
-    } else {
-        $error_message[] = 'ログインに失敗しました。';
-    }
 }
 
 if (!empty($pdo)) {
