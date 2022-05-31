@@ -95,5 +95,6 @@ $(function () {
       },
       dataType: "json",
     });
+    $("#reloadcontent").load("../forum/index.php #reloadcontent");
   });
 });
