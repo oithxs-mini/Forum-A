@@ -6,6 +6,10 @@ require __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
+// 変数の初期化
+$pdo = null;
+$stmt = null;
+
 //.envから
 $envDbname = $_ENV['DB_NAME'];
 $envHost = $_ENV['HOST'];
