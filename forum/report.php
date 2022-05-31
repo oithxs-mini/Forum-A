@@ -113,7 +113,5 @@ $pdo = null;
               <h2>いいえ</h2>
           </div>
         </div>
-
     </div>
-
 </body>
