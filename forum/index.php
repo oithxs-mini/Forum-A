@@ -119,6 +119,9 @@ if (!empty($pdo)) {
     // メッセージのデータを取得する
     $sql = "SELECT view_name,message,post_date FROM message ORDER BY post_date DESC";
     $message_array = $pdo->query($sql);
+
+    //投稿数を $count に入れる
+    $count = $message_array->rowCount();
 }
 
 // データベースの接続を閉じる
@@ -346,7 +349,9 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
                                 </div>
                                 <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
                             </article>
-                        <?php }
+                        <?php } else {
+                            $count--;
+                        }
                     } else { ?>
                         <article class="alert-secondary">
                             <div class="info">
@@ -355,9 +360,12 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
                             </div>
                             <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
                         </article>
-                <?php }
-                } ?>
-            <?php } ?>
+                    <?php }
+                    if ($count == 0) { ?>
+                        <div class="h1 text-center">検索に該当する投稿はありません</div>
+            <?php }
+                }
+            } ?>
         </section>
     </div>
 
