@@ -98,3 +98,16 @@ $(function () {
     $("#reloadcontent").load("../forum/index.php #reloadcontent");
   });
 });
+
+$(document).ready(function () {
+  let word = document.getElementById("#serchcontent");
+  $.ajax({
+    url: "../forum/index.php",
+    type: "POST",
+    data: {
+      seword: word,
+    },
+    dataType: "json",
+  });
+  $("#reloadcontent").load("../forum/index.php #reloadcontent");
+});
