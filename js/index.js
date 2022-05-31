@@ -84,7 +84,7 @@ $(function () {
  */
 
 $(function () {
-  $("#serchcontent").keyup(function (event) {
+  $("#serchcontent").keyup(function () {
     let word = $(this).val();
     // console.log(word);
     $.ajax({
