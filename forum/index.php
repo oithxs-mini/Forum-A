@@ -326,17 +326,12 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
     <div class="container">
         <div class="d-flex flex-row-reverse bd-highlight">
             <div class="col-auto">
-                <input type="text" class="form-control" id="serchcontent" placeholder="<?php if (isset($_SESSION['seword'])) {
-                                                                                            echo $_SESSION['seword'];
-                                                                                        } else {
-                                                                                            echo "投稿内容を検索";
-                                                                                        } ?>">
-
+                <input type="text" class="form-control" id="serchcontent" placeholder="投稿内容を検索">
             </div>
         </div>
     </div>
 
-    <div class="container my-5">
+    <div class="container my-5" id="reloadcontent">
         <section>
             <?php if (!empty($message_array)) { ?>
                 <?php foreach ($message_array as $value) { ?>
