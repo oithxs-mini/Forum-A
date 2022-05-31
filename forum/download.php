@@ -11,7 +11,6 @@ $envDbname = $_ENV['DB_NAME'];
 $envHost = $_ENV['HOST'];
 $envId = $_ENV['ID'];
 $envPassword = $_ENV['PASSWORD'];
-$envAdminPassword = $_ENV['ADMINPASSWORD'];
 $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 // 変数の初期化

@@ -23,7 +23,6 @@ $envDbname = $_ENV['DB_NAME'];
 $envHost = $_ENV['HOST'];
 $envId = $_ENV['ID'];
 $envPassword = $_ENV['PASSWORD'];
-$envAdminPassword = $_ENV['ADMINPASSWORD'];
 $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
@@ -51,14 +50,6 @@ try {
 } catch (PDOException $e) {
     // 接続エラーのときエラー内容を取得する
     $error_message[] = $e->getMessage();
-}
-
-if (!empty($_POST['btn_submit'])) {
-    if (!empty($_POST['admin_password']) && $_POST['admin_password'] === $envAdminPassword) {
-        $_SESSION['admin_login'] = true;
-    } else {
-        $error_message[] = 'ログインに失敗しました。';
-    }
 }
 
 if (!empty($pdo)) {
@@ -214,19 +205,19 @@ $pdo = null;
         <section>
             <?php if (!empty($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') : ?>
 
-                <form method="get" action="./download.php">
+                <form method="get" action="./download.php" class="row gy-2 gx-3 align-items-center">
 
-                    <button type="submit" name="btn_download" class="btn btn-primary rounded-pill">
+                    <button type="submit" name="btn_download" class="btn btn-primary rounded-pill col-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
                             <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
                             <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
                         </svg> Download </button>
-
-                    <select name="limit">
-                        <option value="">全て</option>
-                        <option value="10">10件</option>
-                        <option value="30">30件</option>
-                    </select>
+                    <span class="col-auto">
+                        <select name="limit" class="form-select">
+                            <option value="">全て</option>
+                            <option value="10">10件</option>
+                            <option value="30">30件</option>
+                        </select></span>
                 </form>
                 <?php if (!empty($message_array)) : ?>
                     <?php foreach ($message_array as $value) : ?>

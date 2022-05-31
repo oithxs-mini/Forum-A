@@ -67,6 +67,9 @@ $(function () {
 
 $(function () {
   $("#loginbtn").click(function () {
+    // 通常のPOST処理を無効
+    // event.preventDefault();
+
     $.ajax({
       url: "../forum/login.php",
       type: "POST",
@@ -74,4 +77,37 @@ $(function () {
       dataType: "json",
     });
   });
+});
+
+/**
+ * 投稿内容の検索
+ */
+
+$(function () {
+  $("#serchcontent").keyup(function () {
+    let word = $(this).val();
+    // console.log(word);
+    $.ajax({
+      url: "../forum/index.php",
+      type: "POST",
+      data: {
+        seword: word,
+      },
+      dataType: "json",
+    });
+    $("#reloadcontent").load("../forum/index.php #reloadcontent");
+  });
+});
+
+$(document).ready(function () {
+  let word = document.getElementById("#serchcontent");
+  $.ajax({
+    url: "../forum/index.php",
+    type: "POST",
+    data: {
+      seword: word,
+    },
+    dataType: "json",
+  });
+  $("#reloadcontent").load("../forum/index.php #reloadcontent");
 });

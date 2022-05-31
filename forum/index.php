@@ -27,6 +27,9 @@ $dsn = "mysql:charset=UTF8;dbname=$envDbname;host=$envHost";
 
 session_start();
 
+if (isset($_POST['seword'])) {
+    $_SESSION['seword'] = $_POST['seword'];
+}
 //ログアウト
 if (isset($_POST['logout'])) {
     $_SESSION = array(); //セッションの中身をすべて削除
@@ -116,6 +119,9 @@ if (!empty($pdo)) {
     // メッセージのデータを取得する
     $sql = "SELECT view_name,message,post_date FROM message ORDER BY post_date DESC";
     $message_array = $pdo->query($sql);
+
+    //投稿数を $count に入れる
+    $count = $message_array->rowCount();
 }
 
 // データベースの接続を閉じる
@@ -173,7 +179,7 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
 
                     <div class="text-end">
                         <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">Login</button>
-                        <form id="loginform">
+                        <form id="loginform" method="POST">
                             <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog ">
                                     <div class="modal-content bg-light">
@@ -213,7 +219,7 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
                 <?php endif; ?>
 
                 <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" data-bs-whatever="@mdo">Sign-up</button>
-                <form id="signupform">
+                <form id="signupform" method="POST">
                     <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog ">
                             <div class="modal-content bg-light">
@@ -316,19 +322,45 @@ if (isset($_SESSION['view_name']) && $_SESSION['view_name'] == 'admin') {
     </div>
 
     <hr>
-    <div class="container my-5">
+
+    <div class="container">
+        <div class="d-flex flex-row-reverse bd-highlight">
+            <div class="col-auto">
+                <input type="text" class="form-control" id="serchcontent" placeholder="投稿内容を検索">
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-5" id="reloadcontent">
         <section>
             <?php if (!empty($message_array)) { ?>
                 <?php foreach ($message_array as $value) { ?>
-                    <article class="alert-secondary">
-                        <div class="info">
-                            <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
-                            <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
-                        </div>
-                        <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
-                    </article>
-                <?php } ?>
-            <?php } ?>
+                    <?php if (isset($_SESSION['seword'])) {
+                        if (strpos($value['message'], $_SESSION['seword']) !== false) { ?>
+                            <article class="alert-secondary">
+                                <div class="info">
+                                    <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                                    <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
+                                </div>
+                                <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
+                            </article>
+                        <?php } else {
+                            $count--;
+                        }
+                    } else { ?>
+                        <article class="alert-secondary">
+                            <div class="info">
+                                <h2><?php echo htmlspecialchars($value['view_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                                <time><?php echo date('Y年m月d日 H:i', strtotime($value['post_date'])); ?></time>
+                            </div>
+                            <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
+                        </article>
+                    <?php }
+                    if ($count == 0) { ?>
+                        <div class="h1 text-center">検索に該当する投稿はありません</div>
+            <?php }
+                }
+            } ?>
         </section>
     </div>
 
