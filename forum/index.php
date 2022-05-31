@@ -249,8 +249,8 @@ $pdo = null;
                         <p><?php echo nl2br(htmlspecialchars($value['message'], ENT_QUOTES, 'UTF-8')); ?></p>
                         <?php
                         //以下goodbtn.php参照する
-                        $p = $value['id'];
-                        require('goodbtn.php');
+                        //$p = $value['id'];
+                        require('kiji.php');
                         ?>
                     </article>
                 <?php } ?>
@@ -277,7 +277,7 @@ $pdo = null;
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <!-- JSの読み込み -->
     <script src="../js/index.js"></script>
-    <script src="../js/good.js"></script>
+    <!--<script src="../js/good.js"></script>-->
 </body>
 
 </html>
