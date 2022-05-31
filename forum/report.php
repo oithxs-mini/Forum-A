@@ -109,8 +109,7 @@ $pdo = null;
             </div>
           </article>
           <div class="text">
-              <h2>はい</h2>
-              <h2>いいえ</h2>
+              <!-- ここに選択肢を挿入する -->
           </div>
         </div>
     </div>
