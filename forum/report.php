@@ -110,6 +110,15 @@ $pdo = null;
           </article>
           <div class="text">
               <!-- ここに選択肢を挿入する -->
+              <div class="container mt-5">
+                  <button>
+                      <p>はい</p>
+                  </button>
+
+                  <button>
+                      <p>いいえ</p>
+                  </button>
+              </div>
           </div>
         </div>
     </div>
