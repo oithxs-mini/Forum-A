@@ -53,7 +53,7 @@
 
     <h1>報告が完了しました！</h1>
     <h2>ありがとうございました。対処までしばらくお待ちください。</h2>
-    <button onclick="location.href='index.php'">戻る</button>
+    <button class="mx-2" onclick="location.href='index.php'">戻る</button>
 </body>
 
 </html>
