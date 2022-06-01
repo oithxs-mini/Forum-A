@@ -111,11 +111,11 @@ $pdo = null;
           <div class="text">
               <!-- ここに選択肢を挿入する -->
               <div class="container mt-5">
-                  <button>
+                  <button onclick="location.href='complete.php'">
                       <p>はい</p>
                   </button>
 
-                  <button>
+                  <button onclick="location.href='index.php'">
                       <p>いいえ</p>
                   </button>
               </div>
