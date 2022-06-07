@@ -18,9 +18,9 @@ jobs:
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
-        
-      - name: secret test echo
-        run: echo "${{ secret.TEST }}"
+
+      - name: echo env
+        run: echo "Hello, ${{ secrets.TEST }}"
 
       - name: Cache Composer packages
         id: composer-cache
