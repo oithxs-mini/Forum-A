@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ひとこと掲示板</title>
-    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="index.css" />
 
     <!-- Bootstrap CSS -->
     <link
@@ -33,7 +33,7 @@
             href="./"
             class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
           >
-            <span class="title h1">HxS掲示板</span>
+            <span class="title h1">掲示板</span>
           </a>
 
           <ul

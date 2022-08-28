@@ -2,7 +2,9 @@ FROM php:fpm-buster
 
 COPY ./docker/src/php/php.ini /usr/local/etc/php/
 
-COPY ./ /var/www/forum
+COPY ./docker/src/php/www.conf /usr/local/etc/php-fpm.d/
+
+COPY ./ /usr/share/nginx/html
 
 RUN apt-get update && apt-get install -y \
     unzip
@@ -17,6 +19,6 @@ ENV COMPOSER_HOME /composer
 
 ENV PATH $PATH:/composer/vendor/bin
 
-WORKDIR /var/www/forum
+WORKDIR /usr/share/nginx/html
 
 RUN composer install

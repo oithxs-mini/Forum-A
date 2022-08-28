@@ -127,7 +127,7 @@ $pdo = null;
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                 <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                    <span class="title h1">HxS掲示板</span>
+                    <span class="title h1">掲示板</span>
                 </a>
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-3 justify-content-center mb-md-0">
