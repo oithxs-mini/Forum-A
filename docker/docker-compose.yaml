@@ -27,7 +27,7 @@ services:
     tty: true
 
   db:
-    image: mysql:5.7
+    image: mysql:latest
     container_name: db
     environment:
       MYSQL_DATABASE: forum
@@ -41,7 +41,7 @@ services:
     tty: true
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin:latest
     container_name: phpmyadmin
     environment:
       - PMA_ARBITRARY=1
