@@ -10,6 +10,7 @@ services:
       - ../index.php:/usr/share/nginx/html/index.php
       - ../forum:/usr/share/nginx/html/forum
       - ../status:/usr/share/nginx/html/status
+      - ../.env.example:/usr/share/nginx/html/.env
     depends_on:
       - db
     tty: true
