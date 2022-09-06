@@ -7,7 +7,8 @@ COPY ./docker/src/php/www.conf /usr/local/etc/php-fpm.d/
 COPY ./ /usr/share/nginx/html
 
 RUN apt-get update && apt-get install -y \
-    unzip
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install mysqli pdo_mysql
 
